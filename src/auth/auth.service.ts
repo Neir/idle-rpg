@@ -7,9 +7,8 @@ export class AuthService {
     constructor(private jwtService: JwtService, private playersService: PlayerService) {}
 
     async validatePlayer(name: string, pass: string): Promise<any> {
-        const player = await this.playersService.findOne(name);
-        if (player && player.password === pass) {
-            console.log('validate player');
+        const player = this.playersService.getPlayerByName(name);
+        if (player?.password === pass) {
             const { password, ...result } = player;
             return result;
         }
@@ -33,4 +32,14 @@ export class AuthService {
             access_token: this.jwtService.sign(payload),
         };
     }
+
+    // public async getRefreshToken(userId: number): Promise<string> {
+    //   const userDataToUpdate = {
+    //     refreshToken: randomToken.generate(16),
+    //     refreshTokenExp: moment().day(1).format('YYYY/MM/DD'),
+    //   };
+    //
+    //   await this.playersService.update(userId, userDataToUpdate);
+    //   return userDataToUpdate.refreshToken;
+    // }
 }
